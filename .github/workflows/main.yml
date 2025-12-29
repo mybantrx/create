@@ -7,11 +7,7 @@ jobs:
     
     # Kuncinya di sini: Pake image lo sebagai environment!
     container:
-      image: ghcr.io/${{ github.repository }}:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
+      image: ghcr.io/mybantrx/trench-panel:latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

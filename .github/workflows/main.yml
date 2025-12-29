@@ -1,20 +1,39 @@
-name: Run My Custom OS
-on: [push]
+name: Run My Custom OS (6 Hours Standby)
+on: [push, workflow_dispatch] # workflow_dispatch biar bisa lo klik 'Run' manual
 
 jobs:
   trench-cloud-job:
     runs-on: ubuntu-latest
+    timeout-minutes: 360 # Limit maksimal GitHub Action (6 jam)
     
-    # Kuncinya di sni: Pake image lo sebagai environment!
     container:
       image: ghcr.io/mybantrx/trench-panel:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Test My Custom OS
+      - name: Start Services and Hold
+        env:
+          # Pastiin lo udah masukin CF_TOKEN di Repo Secrets!
+          CF_TOKEN: ${{ secrets.CF_TOKEN }} 
         run: |
-          # Munculin branding lo di log GH Action
+          # 1. Start SSH Server biar bisa ditembus
+          /usr/sbin/sshd
+          
+          # 2. Start Cloudflare Tunnel di background
+          # Pakai '&' biar dia jalan di belakang layar
+          cloudflared tunnel --no-autoupdate run --token $CF_TOKEN &
+          
+          # 3. Branding & Info
           fastfetch
-          php -v
-          echo "Gue lagi jalan di dalem Trench Cloud SG-01!"
+          echo "✅ Trench Cloud SG-01 is ONLINE!"
+          echo "🚀 Tunnel and SSH are running..."
+          echo "🕒 Staying alive for the next 6 hours. Don't close me!"
+          
+          # 4. Kuncinya di sini: Sleep sampe 6 jam (21600 detik)
+          # Biar GitHub Action gak nganggep job-nya udah beres
+          sleep 21600

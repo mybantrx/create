@@ -5,7 +5,7 @@ jobs:
   trench-cloud-job:
     runs-on: ubuntu-latest
     
-    # Kuncinya di sini: Pake image lo sebagai environment!
+    # Kuncinya di sni: Pake image lo sebagai environment!
     container:
       image: ghcr.io/mybantrx/trench-panel:latest
     steps:

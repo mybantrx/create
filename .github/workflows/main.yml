@@ -1,13 +1,24 @@
-services:
-  trench-cloud:
-    image: ghcr.io/${GITHUB_USER}/trench-panel:latest # Sesuaikan path-nya
-    container_name: trench-vps-sg01
-    hostname: trenchcloud-sg01
-    restart: always
-    environment:
-      - CF_TOKEN=${CF_TOKEN} # Ambil dari env file biar aman
-    # Port 22 & 80 sebenernya udah di-handle tunnel, 
-    # tapi kalo mau buka port lokal buat debugging:
-    ports:
-      - "2222:22"
-      - "8080:80"
+name: Run My Custom OS
+on: [push]
+
+jobs:
+  trench-cloud-job:
+    runs-on: ubuntu-latest
+    
+    # Kuncinya di sini: Pake image lo sebagai environment!
+    container:
+      image: ghcr.io/${{ github.repository }}:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Test My Custom OS
+        run: |
+          # Munculin branding lo di log GH Action
+          fastfetch
+          php -v
+          echo "Gue lagi jalan di dalem Trench Cloud SG-01!"

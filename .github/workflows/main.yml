@@ -1,0 +1,13 @@
+services:
+  trench-cloud:
+    image: ghcr.io/${GITHUB_USER}/trench-panel:latest # Sesuaikan path-nya
+    container_name: trench-vps-sg01
+    hostname: trenchcloud-sg01
+    restart: always
+    environment:
+      - CF_TOKEN=${CF_TOKEN} # Ambil dari env file biar aman
+    # Port 22 & 80 sebenernya udah di-handle tunnel, 
+    # tapi kalo mau buka port lokal buat debugging:
+    ports:
+      - "2222:22"
+      - "8080:80"
